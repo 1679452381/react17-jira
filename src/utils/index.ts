@@ -13,7 +13,7 @@ export const cleanObj = (obj: Object) => {
   //         delete result[key]
   //     }
   // })
-  console.log(result);
+  // console.log(result);
 
   return result;
 };

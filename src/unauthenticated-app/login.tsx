@@ -1,40 +1,16 @@
 import React, { FormEvent } from "react";
-import * as qs from "qs";
 import { useAuth } from "context/auth-context";
 
-const apiUrl = process.env.REACT_APP_API_URL;
-
 export default function LoginScreen() {
-  const { user, login, register } = useAuth();
-  // interface LoginInfo {
-  //   username: string;
-  //   password: string;
-  // }
-  // const login = (param: LoginInfo) => {
-  //   console.log(JSON.stringify(param));
-
-  //   fetch(`${apiUrl}/login`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(param),
-  //   }).then(async response => {
-  //     if (response.ok) {
-  //     }
-  //   });
-  // };
-
+  const { user, login } = useAuth();
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     //阻止默认事件
     event.preventDefault();
-    // console.log(event);
     const username = (event.currentTarget.elements[0] as HTMLInputElement)
       .value;
     const password = (event.currentTarget.elements[1] as HTMLInputElement)
       .value;
     login({ username, password });
-    // register({ username, password });
   };
   return (
     <form onSubmit={handleSubmit}>

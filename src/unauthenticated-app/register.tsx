@@ -1,30 +1,8 @@
 import React, { FormEvent } from "react";
-import * as qs from "qs";
 import { useAuth } from "context/auth-context";
 
-const apiUrl = process.env.REACT_APP_API_URL;
-
 export default function LoginScreen() {
-  const { user, login, register } = useAuth();
-  // interface LoginInfo {
-  //   username: string;
-  //   password: string;
-  // }
-  // const login = (param: LoginInfo) => {
-  //   console.log(JSON.stringify(param));
-
-  //   fetch(`${apiUrl}/login`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(param),
-  //   }).then(async response => {
-  //     if (response.ok) {
-  //     }
-  //   });
-  // };
-
+  const { user, register } = useAuth();
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     //阻止默认事件
     event.preventDefault();
@@ -33,8 +11,7 @@ export default function LoginScreen() {
       .value;
     const password = (event.currentTarget.elements[1] as HTMLInputElement)
       .value;
-    login({ username, password });
-    // register({ username, password });
+    register({ username, password });
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -47,7 +24,7 @@ export default function LoginScreen() {
         <label htmlFor="password">密码</label>
         <input type="text" id={"password"} />
       </div>
-      <button type="submit">登录</button>
+      <button type="submit">注册</button>
     </form>
   );
 }
