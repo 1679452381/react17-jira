@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Spin, Typography } from "antd";
+import { Button, Spin, Typography } from "antd";
 
 export const Row = styled.div<{
   gap?: number | boolean;
@@ -47,3 +47,7 @@ export const FullPageErrorFallback = ({ error }: { error: Error | null }) => {
     </Fullpage>
   );
 };
+
+export const ButtonNoPadding = styled(Button)`
+  padding: 0;
+`;

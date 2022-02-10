@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react";
-import { Table, TableProps } from "antd";
+import { Dropdown, Menu, Table, TableProps } from "antd";
+import { ButtonNoPadding } from "components/lib";
 import dayjs from "dayjs";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -25,6 +26,7 @@ export interface Project {
 interface ListProps extends TableProps<Project> {
   users: User[];
   refresh?: () => void;
+  setProjectModalOpen: (isOpen: boolean) => void;
 }
 
 export default function List({ users, ...props }: ListProps) {
@@ -53,9 +55,7 @@ export default function List({ users, ...props }: ListProps) {
           key: "name",
           sorter: (a, b) => a.name.localeCompare(b.name),
           render: (value, project) => {
-            return (
-              <Link to={`projects/${String(project.id)}`}>{project.name}</Link>
-            );
+            return <Link to={`${String(project.id)}`}>{project.name}</Link>;
           },
         },
         {
@@ -87,6 +87,28 @@ export default function List({ users, ...props }: ListProps) {
                   ? dayjs(project.created).format("YYYY-MM-DD")
                   : "无"}
               </span>
+            );
+          },
+        },
+        {
+          render: () => {
+            return (
+              <Dropdown
+                overlay={
+                  <Menu>
+                    <Menu.Item key={"edit"}>
+                      <ButtonNoPadding
+                        type={"link"}
+                        onClick={() => props.setProjectModalOpen(true)}
+                      >
+                        编辑项目
+                      </ButtonNoPadding>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <ButtonNoPadding type={"link"}>...</ButtonNoPadding>
+              </Dropdown>
             );
           },
         },

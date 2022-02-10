@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useMountedRef } from "utils";
 
 interface State<D> {
@@ -27,22 +27,51 @@ export const useAsync = <D>(
     ...initialState,
   });
   const [retry, setRetry] = useState(() => () => {});
-  const setData = (data: D) => {
+  const setData = useCallback((data: D) => {
     setState({
       data,
       stat: "success",
       error: null,
     });
-  };
-  const setError = (error: Error) => {
+  }, []);
+  const setError = useCallback((error: Error) => {
     setState({
       error,
       stat: "error",
       data: null,
     });
-  };
+  }, []);
   //记录组件状态
   const mountedRef = useMountedRef();
+
+  // const run = useCallback((
+  //   promise: Promise<D>,
+  //   retryConfig?: { retry: () => Promise<D> }
+  // ) => {
+  //   if (!promise || !promise.then) {
+  //     throw new Error("请传入promise数据类型");
+  //   }
+  //   setRetry(() => () => {
+  //     if (retryConfig?.retry) {
+  //       run(retryConfig?.retry(), retryConfig);
+  //     }
+  //   });
+  //   setState(prevState => ({
+  //     ...prevState,
+  //     stat: "loading",
+  //   }));
+  //   return promise
+  //     .then((data) => {
+  //       if (mountedRef.current) setData(data);
+  //       return data;
+  //       //catch会消化异常
+  //     })
+  //     .catch((error) => {
+  //       setError(error);
+  //       if (config.throwOnError) return Promise.reject(error);
+  //       return error;
+  //     });
+  // }, [config.throwOnError, mountedRef, setData, setError])
 
   const run = (
     promise: Promise<D>,
@@ -56,10 +85,10 @@ export const useAsync = <D>(
         run(retryConfig?.retry(), retryConfig);
       }
     });
-    setState({
-      ...state,
+    setState((prevState) => ({
+      ...prevState,
       stat: "loading",
-    });
+    }));
     return promise
       .then((data) => {
         if (mountedRef.current) setData(data);
@@ -72,7 +101,6 @@ export const useAsync = <D>(
         return error;
       });
   };
-
   return {
     isIdel: state.stat === "idel",
     isLoading: state.stat === "loading",

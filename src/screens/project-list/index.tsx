@@ -3,7 +3,7 @@ import SearchPanel from "./search-panel";
 import List from "./list";
 import { cleanObj, useMount, useDebounce, useDocumentTitle } from "utils";
 import styled from "@emotion/styled";
-import { Typography } from "antd";
+import { Button, Row, Typography } from "antd";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
 import { useUrlQueryParam } from "utils/url";
@@ -12,7 +12,9 @@ import { Retryer } from "react-query/types/core/retryer";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-export default function ProjectListScreen() {
+export default function ProjectListScreen(props: {
+  setProjectModalOpen: (isOpen: boolean) => void;
+}) {
   // const [, setParam] = useState({
   //   name: "",
   //   personId: "",
@@ -34,7 +36,12 @@ export default function ProjectListScreen() {
 
   return (
     <Container>
-      <h1>项目列表</h1>
+      <Row justify={"space-between"}>
+        <h1>项目列表</h1>
+        <Button onClick={() => props.setProjectModalOpen(true)}>
+          创建项目
+        </Button>
+      </Row>
       <SearchPanel users={users || []} param={param} setParam={setParam} />
       {error ? (
         <Typography.Text type="danger">{error.message}</Typography.Text>
@@ -44,6 +51,7 @@ export default function ProjectListScreen() {
         users={users || []}
         dataSource={list || []}
         loading={isLoading}
+        setProjectModalOpen={props.setProjectModalOpen}
       />
     </Container>
   );
