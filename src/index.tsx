@@ -1,16 +1,26 @@
+import "./wdyr";
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { loadDevTools } from "jira-dev-tool";
-import { AppProviders } from "context";
+// import { loadDevTools } from "jira-dev-tool";
+import { DevTools, loadServer } from "jira-dev-tool";
 
-loadDevTools(() =>
+import { AppProviders } from "context";
+//引入antd样式
+import "antd/dist/antd.less";
+
+import { BrowserRouter as Router } from "react-router-dom";
+
+loadServer(() =>
   ReactDOM.render(
     <React.StrictMode>
       <AppProviders>
-        <App />
+        <DevTools />
+        <Router>
+          <App />
+        </Router>
       </AppProviders>
     </React.StrictMode>,
     document.getElementById("root")

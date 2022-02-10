@@ -1,36 +1,97 @@
+import { render } from "@testing-library/react";
+import { Table, TableProps } from "antd";
+import dayjs from "dayjs";
 import React from "react";
+import { Link } from "react-router-dom";
+import { useEditProjects } from "utils/project";
+import { Pin } from "./pin";
 import { User } from "./search-panel";
 
-interface Project {
-  id: string;
+//TODO 把所有id改为number类型
+export interface Project {
+  id: number;
   name: string;
-  personId: string;
+  personId: number;
   pin: boolean;
   organization: string;
+  created: number;
 }
 
-interface ListProps {
-  list: Project[];
+// interface ListProps {
+//   list: Project[];
+//   users: User[];
+// }
+
+interface ListProps extends TableProps<Project> {
   users: User[];
+  refresh?: () => void;
 }
 
-export default function List({ list, users }: ListProps) {
+export default function List({ users, ...props }: ListProps) {
+  const { mutate } = useEditProjects();
+  const pinProject = (id: number) => (pin: boolean) =>
+    mutate({ id, pin }).then(props.refresh);
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>名称</th>
-          <th>负责人</th>
-        </tr>
-      </thead>
-      <tbody>
-        {list.map((project) => (
-          <tr key={project.id}>
-            <td>{project.name}</td>
-            <td>{users.find((user) => user.id === project.personId)?.name}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    // <div></div>
+    <Table
+      rowKey={"id"}
+      pagination={false}
+      columns={[
+        {
+          title: <Pin checked={true} disabled={true} />,
+          render: (value, project) => {
+            return (
+              <Pin
+                checked={project.pin}
+                onCheckedChange={pinProject(project.id)}
+              />
+            );
+          },
+        },
+        {
+          title: "项目",
+          key: "name",
+          sorter: (a, b) => a.name.localeCompare(b.name),
+          render: (value, project) => {
+            return (
+              <Link to={`projects/${String(project.id)}`}>{project.name}</Link>
+            );
+          },
+        },
+        {
+          title: "部门",
+          dataIndex: "organization",
+          key: "organization",
+        },
+        {
+          title: "负责人",
+          dataIndex: "personName",
+          key: "personName",
+          render: (value, project) => {
+            return (
+              <span>
+                {users.find((user) => user.id === project.personId)?.name ||
+                  "未知"}
+              </span>
+            );
+          },
+        },
+        {
+          title: "创建时间",
+          dataIndex: "created",
+          key: "created",
+          render: (value, project) => {
+            return (
+              <span>
+                {project.created
+                  ? dayjs(project.created).format("YYYY-MM-DD")
+                  : "无"}
+              </span>
+            );
+          },
+        },
+      ]}
+      {...props}
+    />
   );
 }

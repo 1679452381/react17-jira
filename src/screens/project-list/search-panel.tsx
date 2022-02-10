@@ -1,5 +1,12 @@
+// /** @jsx jsx */
+// import { jsx } from "@emotion/react"
+import { Input, Select, Form } from "antd";
+import { IdSelect } from "components/id-select";
+import { UserSelect } from "components/user-select";
+import { Project } from "./list";
+
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
   title: string;
@@ -8,10 +15,11 @@ export interface User {
 
 interface SearchPanelProps {
   users: User[];
-  param: {
-    personId: string;
-    name: string;
-  };
+  param: Partial<Pick<Project, "name" | "personId">>;
+  // param: {
+  //   personId: string;
+  //   name: string;
+  // };
   setParam: (param: SearchPanelProps["param"]) => void;
 }
 
@@ -21,11 +29,10 @@ export default function SearchPanel({
   users,
 }: SearchPanelProps) {
   return (
-    <>
-      <form action="">
-        <input
-          type="text"
-          value={param.name}
+    <Form style={{ marginBottom: "2rem" }} layout="inline">
+      <Form.Item>
+        <Input
+          placeholder="请输入项目名称"
           onChange={(evt) =>
             setParam({
               ...param,
@@ -33,23 +40,35 @@ export default function SearchPanel({
             })
           }
         />
-        <select
+      </Form.Item>
+      <Form.Item>
+        <UserSelect
+          defaultOptionName={"负责人"}
           value={param.personId}
-          onChange={(evt) =>
+          onChange={(value) =>
             setParam({
               ...param,
-              personId: evt.target.value,
+              personId: value,
+            })
+          }
+        ></UserSelect>
+        {/* <Select
+          value={param.personId}
+          onChange={(value) =>
+            setParam({
+              ...param,
+              personId: value,
             })
           }
         >
-          <option value={""}>请选择负责人</option>
+          <Select.Option value={""}>请选择负责人</Select.Option>
           {users.map((user) => (
-            <option key={user.id} value={user.id}>
+            <Select.Option key={user.id} value={String(user.id)}>
               {user.name}
-            </option>
+            </Select.Option>
           ))}
-        </select>
-      </form>
-    </>
+        </Select> */}
+      </Form.Item>
+    </Form>
   );
 }
