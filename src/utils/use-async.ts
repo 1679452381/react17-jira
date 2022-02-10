@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMountedRef } from "utils";
 
 interface State<D> {
   error: Error | null;
@@ -40,6 +41,8 @@ export const useAsync = <D>(
       data: null,
     });
   };
+  //记录组件状态
+  const mountedRef = useMountedRef();
 
   const run = (
     promise: Promise<D>,
@@ -59,7 +62,7 @@ export const useAsync = <D>(
     });
     return promise
       .then((data) => {
-        setData(data);
+        if (mountedRef.current) setData(data);
         return data;
         //catch会消化异常
       })

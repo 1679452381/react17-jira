@@ -26,7 +26,7 @@ export default function ProjectListScreen() {
 
   const [param, setParam] = useProjectSearchParams();
   // const [param] = useUrlQueryParam(keys)
-  const debounceParam = useDebounce(param, 2000);
+  const debounceParam = useDebounce(param, 200);
   const { isLoading, error, data: list, retry } = useProjects(debounceParam);
   const { data: users } = useUsers();
   useDocumentTitle("项目列表", false);
