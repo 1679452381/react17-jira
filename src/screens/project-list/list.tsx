@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useEditProjects } from "utils/project";
 import { Pin } from "./pin";
 import { User } from "./search-panel";
+import { useProjectModal } from "./util";
 
 //TODO 把所有id改为number类型
 export interface Project {
@@ -27,13 +28,15 @@ interface ListProps extends TableProps<Project> {
   users: User[];
   refresh?: () => void;
   // setProjectModalOpen: (isOpen: boolean) => void;
-  projectButton: JSX.Element;
+  // projectButton: JSX.Element;
 }
 
 export default function List({ users, ...props }: ListProps) {
   const { mutate } = useEditProjects();
   const pinProject = (id: number) => (pin: boolean) =>
     mutate({ id, pin }).then(props.refresh);
+
+  const { open } = useProjectModal();
   return (
     // <div></div>
     <Table
@@ -97,7 +100,11 @@ export default function List({ users, ...props }: ListProps) {
               <Dropdown
                 overlay={
                   <Menu>
-                    <Menu.Item key={"edit"}>{props.projectButton}</Menu.Item>
+                    <Menu.Item key={"edit"}>
+                      <ButtonNoPadding type={"link"} onClick={open}>
+                        编辑项目
+                      </ButtonNoPadding>
+                    </Menu.Item>
                   </Menu>
                 }
               >
