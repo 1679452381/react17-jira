@@ -9,11 +9,13 @@ import { useUsers } from "utils/user";
 import { useUrlQueryParam } from "utils/url";
 import { useProjectSearchParams } from "./util";
 import { Retryer } from "react-query/types/core/retryer";
+import { ButtonNoPadding } from "components/lib";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export default function ProjectListScreen(props: {
-  setProjectModalOpen: (isOpen: boolean) => void;
+  // setProjectModalOpen: (isOpen: boolean) => void;
+  projectButton: JSX.Element;
 }) {
   // const [, setParam] = useState({
   //   name: "",
@@ -38,9 +40,7 @@ export default function ProjectListScreen(props: {
     <Container>
       <Row justify={"space-between"}>
         <h1>项目列表</h1>
-        <Button onClick={() => props.setProjectModalOpen(true)}>
-          创建项目
-        </Button>
+        {props.projectButton}
       </Row>
       <SearchPanel users={users || []} param={param} setParam={setParam} />
       {error ? (
@@ -51,7 +51,7 @@ export default function ProjectListScreen(props: {
         users={users || []}
         dataSource={list || []}
         loading={isLoading}
-        setProjectModalOpen={props.setProjectModalOpen}
+        projectButton={props.projectButton}
       />
     </Container>
   );
