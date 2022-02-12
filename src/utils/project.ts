@@ -1,9 +1,15 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { QueryKey, useMutation, useQuery, useQueryClient } from "react-query";
 import { Project } from "screens/project-list/list";
+import { useProjectSearchParams } from "screens/project-list/util";
 import { cleanObj } from "utils";
 import { useHttp } from "./http";
 import { useAsync } from "./use-async";
+import {
+  useAddConfig,
+  useDeleteConfig,
+  useEditConfig,
+} from "utils/use-optimistic-options";
 
 export const useProjects = (params?: Partial<Project>) => {
   const client = useHttp();
@@ -27,19 +33,15 @@ export const useProjects = (params?: Partial<Project>) => {
   // return result;
 };
 
-export const useEditProject = () => {
+export const useEditProject = (queryKey: QueryKey) => {
   const client = useHttp();
-
-  const queryClient = useQueryClient();
   return useMutation(
     (params: Partial<Project>) =>
       client(`projects/${params.id}`, {
         method: "PATCH",
         data: params,
       }),
-    {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
-    }
+    useEditConfig(queryKey)
   );
 
   // const { run, ...asynvRes } = useAsync();
@@ -57,7 +59,7 @@ export const useEditProject = () => {
   // };
 };
 
-export const useAddProject = () => {
+export const useAddProject = (queryKey: QueryKey) => {
   const client = useHttp();
 
   const queryClient = useQueryClient();
@@ -67,9 +69,7 @@ export const useAddProject = () => {
         method: "POST",
         data: params,
       }),
-    {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
-    }
+    useAddConfig(queryKey)
   );
 
   // const { run, ...asynvRes } = useAsync();
@@ -85,6 +85,18 @@ export const useAddProject = () => {
   //   mutate,
   //   ...asynvRes,
   // };
+};
+
+export const useDeleteProject = (queryKey: QueryKey) => {
+  const client = useHttp();
+
+  return useMutation(
+    ({ id }: { id: number }) =>
+      client(`projects/${id}`, {
+        method: "DELETE",
+      }),
+    useDeleteConfig(queryKey)
+  );
 };
 
 export const useProject = (id?: number) => {

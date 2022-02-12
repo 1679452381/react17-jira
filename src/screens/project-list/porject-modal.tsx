@@ -6,7 +6,7 @@ import { UserSelect } from "components/user-select";
 import { log } from "console";
 import { useEffect } from "react";
 import { useAddProject, useEditProject } from "utils/project";
-import { useProjectModal } from "./util";
+import { useProjectModal, useProjectsQueryKey } from "./util";
 
 export const ProjectModal = () => {
   const { projectModalOpen, close, editingProject, isLoading } =
@@ -15,13 +15,20 @@ export const ProjectModal = () => {
   const title = editingProject ? "编辑项目" : "创建项目";
 
   const useMutateProject = editingProject ? useEditProject : useAddProject;
-  const { mutateAsync, error, isLoading: mutateLoading } = useMutateProject();
+  const {
+    mutateAsync,
+    error,
+    isLoading: mutateLoading,
+  } = useMutateProject(useProjectsQueryKey());
 
   const [form] = useForm();
   const onFinish = (values: any) => {
     mutateAsync({ ...editingProject, ...values }).then((e) => {
-      console.log(e);
+      form.resetFields();
+      close();
     });
+  };
+  const closeModal = () => {
     form.resetFields();
     close();
   };
@@ -34,7 +41,7 @@ export const ProjectModal = () => {
   return (
     <Drawer
       forceRender={true}
-      onClose={close}
+      onClose={closeModal}
       visible={projectModalOpen}
       width={"100%"}
     >
