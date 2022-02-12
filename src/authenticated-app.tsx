@@ -6,7 +6,6 @@ import { ButtonNoPadding, Row } from "components/lib";
 // import softwareLogo from 'assets/software-logo.svg'
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Button, Dropdown, Menu } from "antd";
-
 import { Navigate, Route, Routes } from "react-router";
 import { ProjectScreen } from "screens/project";
 import { reSetRoute } from "utils";
@@ -14,7 +13,7 @@ import { ProjectModal } from "screens/project-list/porject-modal";
 import { ProjectPopover } from "components/porject-popover";
 
 export const AuthenticatedApp = () => {
-  const [projectModalopen, setProjectModalOpen] = useState(false);
+  // const [projectModalopen, setProjectModalOpen] = useState(false);
   return (
     <Container>
       <PageHeader />
@@ -41,7 +40,7 @@ const PageHeader = () => {
         >
           <SoftwareLogo width={"18rem"} color={"rgb(32,138,255)"} />
         </ButtonNoPadding>
-        <ProjectPopover></ProjectPopover>
+        <ProjectPopover />
         <span>用户</span>
       </HeaderLeft>
       <HeaderRight>

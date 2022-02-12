@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
-import { Dropdown, Menu, Table, TableProps } from "antd";
+import { Button, Dropdown, Menu, Table, TableProps } from "antd";
 import { ButtonNoPadding } from "components/lib";
 import dayjs from "dayjs";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useEditProjects } from "utils/project";
+import { useEditProject } from "utils/project";
 import { Pin } from "./pin";
 import { User } from "./search-panel";
 import { useProjectModal } from "./util";
@@ -26,17 +26,18 @@ export interface Project {
 
 interface ListProps extends TableProps<Project> {
   users: User[];
-  refresh?: () => void;
+  // refresh?: () => void;
   // setProjectModalOpen: (isOpen: boolean) => void;
   // projectButton: JSX.Element;
 }
 
 export default function List({ users, ...props }: ListProps) {
-  const { mutate } = useEditProjects();
-  const pinProject = (id: number) => (pin: boolean) =>
-    mutate({ id, pin }).then(props.refresh);
+  const { mutate } = useEditProject();
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
 
-  const { open } = useProjectModal();
+  const { open, startEdit } = useProjectModal();
+
+  const editProject = (id: number) => () => startEdit(id);
   return (
     // <div></div>
     <Table
@@ -95,15 +96,20 @@ export default function List({ users, ...props }: ListProps) {
           },
         },
         {
-          render: () => {
+          render: (value, project) => {
             return (
               <Dropdown
                 overlay={
                   <Menu>
                     <Menu.Item key={"edit"}>
-                      <ButtonNoPadding type={"link"} onClick={open}>
-                        编辑项目
-                      </ButtonNoPadding>
+                      <Button type={"link"} onClick={editProject(project.id)}>
+                        编辑
+                      </Button>
+                    </Menu.Item>
+                    <Menu.Item key={"delete"}>
+                      <Button type={"link"} onClick={open}>
+                        删除
+                      </Button>
                     </Menu.Item>
                   </Menu>
                 }
