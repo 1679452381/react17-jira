@@ -1,9 +1,8 @@
 import styled from "@emotion/styled";
 import { Button, Drawer, Form, Input, Spin } from "antd";
-import { useForm } from "antd/lib/form/Form";
-import { ErrorBox, FullPageLoading } from "components/lib";
+
+import { ErrorBox } from "components/lib";
 import { UserSelect } from "components/user-select";
-import { log } from "console";
 import { useEffect } from "react";
 import { useAddProject, useEditProject } from "utils/project";
 import { useProjectModal, useProjectsQueryKey } from "./util";
@@ -21,13 +20,15 @@ export const ProjectModal = () => {
     isLoading: mutateLoading,
   } = useMutateProject(useProjectsQueryKey());
 
-  const [form] = useForm();
+  const [form] = Form.useForm();
+
   const onFinish = (values: any) => {
-    mutateAsync({ ...editingProject, ...values }).then((e) => {
+    mutateAsync({ ...editingProject, ...values }).then(() => {
       form.resetFields();
       close();
     });
   };
+
   const closeModal = () => {
     form.resetFields();
     close();
@@ -51,7 +52,7 @@ export const ProjectModal = () => {
         ) : (
           <>
             <h1>{title}</h1>
-            <ErrorBox error={error} />
+            {/* <ErrorBox error={error} /> */}
             <Form
               form={form}
               layout={"vertical"}
